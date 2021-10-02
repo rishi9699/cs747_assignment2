@@ -30,6 +30,7 @@ gamma = float((f.readline().split())[1])
 
 if args.algorithm=='vi':
     V=np.zeros(ns)
+    acts = np.zeros(ns, dtype='int')
     condition = True
     while condition:
         prev_v = V.copy()
@@ -37,46 +38,22 @@ if args.algorithm=='vi':
             if s in end_state:
                 continue
 
-            a = next(iter(mdp[s]))
+            action = next(iter(mdp[s]))
             cursum = 0
-            for sp in mdp[s][a]:
+            for sp in mdp[s][action]:
                 cursum+= sp[2]*(sp[1] + gamma*V[sp[0]])
             val = cursum
             
-            for a in mdp[s].values():
+            for a in mdp[s].keys():
                 cursum = 0
-                for sp in a:
+                for sp in mdp[s][a]:
                     cursum+= sp[2]*(sp[1] + gamma*V[sp[0]])
                 if cursum>val:
                     val=cursum
-            V[s]=val
+                    action=a
+            V[s] = val
+            acts[s] = action
         condition = True if max(abs(V-prev_v))>0.000000000001 else False
-    
-    acts = np.zeros(ns, dtype='int')
-    for i in range(ns):
-        if i in end_state:
-            continue
-        acts[i] = next(iter(mdp[i]))
-    
-    for s in range(ns):
-        if s in end_state:
-            continue
-        
-        a = next(iter(mdp[s]))
-        cursum = 0
-        for sp in mdp[s][a]:
-            cursum+= sp[2]*(sp[1] + gamma*V[sp[0]])
-        max_a = a
-        val = cursum
-        
-        for a in mdp[s].keys():
-            cursum = 0
-            for sp in mdp[s][a]:
-                cursum+= sp[2]*(sp[1] + gamma*V[sp[0]])
-            if cursum>val:
-                max_a = a
-                val=cursum
-        acts[s] = max_a
         
     for i in range(ns):
         print("{:.6f}".format(V[i]), acts[i])
@@ -151,7 +128,6 @@ if args.algorithm=='lp':
                 exp+= sp[2]*(sp[1] + gamma*V[sp[0]])
             Lp_prob += V[s] >= exp
             
-    #soln_status = Lp_prob.solve(GLPK_CMD(msg=0))
     soln_status = p.GLPK_CMD(msg=False).solve(Lp_prob)
     
     acts = np.zeros(ns, dtype='int')

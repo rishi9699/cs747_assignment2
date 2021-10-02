@@ -50,7 +50,7 @@ if args.algorithm=='vi':
                 if cursum>val:
                     val=cursum
             V[s]=val
-        condition = True if max(abs(V-prev_v))>0.000000001 else False
+        condition = True if max(abs(V-prev_v))>0.000000000001 else False
     
     acts = np.zeros(ns, dtype='int')
     for i in range(ns):
@@ -151,7 +151,8 @@ if args.algorithm=='lp':
                 exp+= sp[2]*(sp[1] + gamma*V[sp[0]])
             Lp_prob += V[s] >= exp
             
-    soln_status = Lp_prob.solve()
+    #soln_status = Lp_prob.solve(GLPK_CMD(msg=0))
+    soln_status = p.GLPK_CMD(msg=False).solve(Lp_prob)
     
     acts = np.zeros(ns, dtype='int')
     for i in range(ns):

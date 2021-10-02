@@ -4,7 +4,7 @@ import numpy as np
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--mdp")
-parser.add_argument("--algorithm", default='lp')
+parser.add_argument("--algorithm", default='vi')
 args = parser.parse_args()
 
 f = open(args.mdp)
@@ -34,7 +34,15 @@ if args.algorithm=='vi':
     while condition:
         prev_v = V.copy()
         for s in range(ns):
-            val = V[s]
+            if s in end_state:
+                continue
+
+            a = next(iter(mdp[s]))
+            cursum = 0
+            for sp in mdp[s][a]:
+                cursum+= sp[2]*(sp[1] + gamma*V[sp[0]])
+            val = cursum
+            
             for a in mdp[s].values():
                 cursum = 0
                 for sp in a:
@@ -43,7 +51,7 @@ if args.algorithm=='vi':
                     val=cursum
             V[s]=val
         condition = True if max(abs(V-prev_v))>0.000000001 else False
-        
+    
     acts = np.zeros(ns, dtype='int')
     for i in range(ns):
         if i in end_state:
@@ -71,8 +79,8 @@ if args.algorithm=='vi':
         acts[s] = max_a
         
     for i in range(ns):
-        print("{:.6f}".format(V[i])," ",acts[i])
-        
+        print("{:.6f}".format(V[i]), acts[i])
+
 if args.algorithm=='hpi':
     V=np.zeros(ns)
     acts = np.zeros(ns, dtype='int')
@@ -100,8 +108,13 @@ if args.algorithm=='hpi':
         for s in range(ns):
             if s in end_state:
                 continue
-            val = V[s]
-            max_a = acts[s]
+            
+            max_a = next(iter(mdp[s]))
+            cursum = 0
+            for sp in mdp[s][max_a]:
+                cursum+= sp[2]*(sp[1] + gamma*V[sp[0]])
+            val = cursum
+        
             for a in mdp[s].keys():    
                 cursum = 0
                 for sp in mdp[s][a]:
@@ -114,7 +127,7 @@ if args.algorithm=='hpi':
         condition = True if sum(prev_acts-acts)!=0 else False
         
     for i in range(ns):
-        print("{:.6f}".format(V[i])," ",acts[i])
+        print("{:.6f}".format(V[i]), acts[i])
 
 if args.algorithm=='lp':
     
@@ -138,7 +151,7 @@ if args.algorithm=='lp':
                 exp+= sp[2]*(sp[1] + gamma*V[sp[0]])
             Lp_prob += V[s] >= exp
             
-    status = Lp_prob.solve()
+    soln_status = Lp_prob.solve()
     
     acts = np.zeros(ns, dtype='int')
     for i in range(ns):
@@ -167,4 +180,4 @@ if args.algorithm=='lp':
         acts[s] = max_a
         
     for i in range(ns):
-        print("{:.6f}".format(V[i].value()),' ',acts[i])
+        print("{:.6f}".format(V[i].value()), acts[i])

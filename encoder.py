@@ -46,21 +46,21 @@ if fixedplayer[0]=='2':
                             else:
                                 # go to win state
                                 #print('player 2 ended the game, player 1 won', s, ''.join(tmp))
-                                print('transition', states[s], j, '2424 1', probs[k])
+                                print('transition', states[s], j, len(states)+1, '1', probs[k])
                                 #print()
                             tmp[k]='0'
                         k+=1
                 else:
                     # go to draw or lose state and reward 0
                     #print(s,'player 1 did something foolish, player 2 won or draw', ''.join(tmp))
-                    print('transition', states[s], j, '2423 -1 1.0')
+                    print('transition', states[s], j, len(states), '-1 1.0')
                     #print()
                 tmp[j]='0'
             j+=1
             
     print('mdptype episodic')
     print('discount  1.0')
-    
+
 
 if fixedplayer[0]=='1':
 
@@ -99,27 +99,27 @@ if fixedplayer[0]=='1':
                             tmp[k]='1'
                             if ''.join(tmp) in states:
                                 #go to tmp state
-                                print(s, ''.join(tmp))
+                                #print(s, ''.join(tmp))
                                 print('transition', states[s], j, states[''.join(tmp)], str(0), probs[k])
-                                print()
+                                #print()
                             else:
                                 # go to win state
-                                print('player 1 ended the game, player 2 won or draw', s, ''.join(tmp))
+                                #print('player 1 ended the game, player 2 won or draw', s, ''.join(tmp))
                                 if '0' in tmp:
-                                    print('transition', states[s], j, '2424 1', probs[k]) #won
+                                    print('transition', states[s], j, len(states)+1, '1', probs[k]) #won
                                 else:
                                     if check1pattern(tmp):
-                                        print('transition', states[s], j, '2424 1', probs[k]) #won
+                                        print('transition', states[s], j, len(states)+1, '1', probs[k]) #won
                                     else:
-                                        print('transition', states[s], j, '2423 -1', probs[k]) #draw
-                                print()
+                                        print('transition', states[s], j, len(states), '-1', probs[k]) #draw
+                                #print()
                             tmp[k]='0'
                         k+=1
                 else:
                     # go to draw or lose state and reward 0
-                    print(s,'player 2 did something foolish, player 1 won', ''.join(tmp))
-                    print('transition', states[s], j, '2423 -1 1.0')
-                    print()
+                    #print(s,'player 2 did something foolish, player 1 won', ''.join(tmp))
+                    print('transition', states[s], j, len(states), '-1 1.0')
+                    #print()
                 tmp[j]='0'
             j+=1
 

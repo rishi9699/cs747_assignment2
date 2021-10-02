@@ -18,7 +18,7 @@ f = open(args.value_policy)
 line = f.readline().split()
 actions = [0]*9
 i=0
-while len(line)!=0:
+while i<len(states):
     print(states[i], end=' ')
     actions[int(line[1])]=1
     print(*actions)

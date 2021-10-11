@@ -38,11 +38,11 @@ def encoder_function(policyfile, statefile):
                                 if ''.join(tmp) in states:
                                     print('transition', states[s], j, states[''.join(tmp)], str(0), probs[k])
                                 else:
-                                    print('transition', states[s], j, len(states)+1, '1', probs[k])
+                                    print('transition', states[s], j, len(states)+1, '1', probs[k]) #won
                                 tmp[k]='0'
                             k+=1
                     else:
-                        print('transition', states[s], j, len(states), '-1 1.0')
+                        print('transition', states[s], j, len(states), '0 1.0') #lost
                     tmp[j]='0'
                 j+=1
                 
@@ -92,11 +92,11 @@ def encoder_function(policyfile, statefile):
                                         if check1pattern(tmp):
                                             print('transition', states[s], j, len(states)+1, '1', probs[k]) #won
                                         else:
-                                            print('transition', states[s], j, len(states), '-1', probs[k]) #draw
+                                            print('transition', states[s], j, len(states), '0', probs[k]) #draw
                                 tmp[k]='0'
                             k+=1
                     else:
-                        print('transition', states[s], j, len(states), '-1 1.0')
+                        print('transition', states[s], j, len(states), '0 1.0') #lost
                     tmp[j]='0'
                 j+=1
 

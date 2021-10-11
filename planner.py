@@ -124,7 +124,7 @@ def planner_function(mdplocation, algorithm='vi'):
                     exp+= sp[2]*(sp[1] + gamma*V[sp[0]])
                 Lp_prob += V[s] >= exp
                 
-        soln_status = p.GLPK_CMD(msg=False).solve(Lp_prob)
+        soln_status = p.PULP_CBC_CMD(msg=False).solve(Lp_prob)
         
         acts = np.zeros(ns, dtype='int')
         
